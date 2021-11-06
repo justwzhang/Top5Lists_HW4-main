@@ -10,6 +10,7 @@ import {
     Statusbar,
     WorkspaceScreen,
     SignInSide,
+    BasicModal,
 } from './components'
 /*
     This is our application's top-level component.
@@ -28,6 +29,7 @@ const App = () => {
             <AuthContextProvider>
                 <GlobalStoreContextProvider>              
                     <AppBanner />
+                    <BasicModal />
                     <Switch>
                         <Route path="/" exact component={HomeWrapper} />
                         <Route path="/register/" exact component={RegisterScreen} />

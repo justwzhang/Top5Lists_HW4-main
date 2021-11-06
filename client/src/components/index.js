@@ -9,6 +9,7 @@ import Statusbar from './Statusbar'
 import Top5Item from './Top5Item'
 import SignInSide from './SignInSide'
 import WorkspaceScreen from './WorkspaceScreen'
+import BasicModal from './BasicModal'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -26,4 +27,6 @@ export {
     Statusbar, 
     Top5Item, 
     WorkspaceScreen,
-    SignInSide }
+    SignInSide,
+    BasicModal
+}

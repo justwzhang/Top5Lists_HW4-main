@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth'
+import { BasicModal } from '.';
 
 export default function SignInSide() {
     const theme = createTheme();

@@ -10,7 +10,6 @@ logInUser = async (req, res) => {
                 .json({ errorMessage: "Please enter all required fields." });
         }
     try{
-        console.log("AAAAA")
         const{email, password} = req.body
         if (!email || !password) {
             return res
