@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -24,6 +25,11 @@ export default function SignInSide() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         // eslint-disable-next-line no-console
+        const user = {
+            email: data.get('email'),
+            password: data.get('password')
+        }
+        auth.logInUser(user, store);
         console.log({
             email: data.get('email'),
             password: data.get('password'),

@@ -2,6 +2,62 @@ const auth = require('../auth')
 const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
 
+logInUser = async (req, res) => {
+    const{email, password} = req.body
+        if (!email || !password) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+    try{
+        console.log("AAAAA")
+        const{email, password} = req.body
+        if (!email || !password) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        if (password.length < 8) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Invalid password"
+                });
+        }
+        const user = await User.findOne({email: email}, (err, user) => {
+            if(err){
+                return res
+                    .status(404)
+                    .json({errorMessage: "Email not registered"})
+            }
+        }).catch(err => {
+            return res
+                .status(400)
+                .json({errorMessage: "Email not registered"})
+        })
+        if(bcrypt.compare(password, user.passwordHash)){
+            const token = auth.signToken(user);
+            await res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            }).status(200).json({
+                loggedIn: true,
+                user: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email
+                }
+            }).send();
+        }
+    }catch(err){
+        console.log(err)
+        return res
+                .status(404)
+                .json({errorMessage: "Email not registered"}).send();
+    }
+}
+
 getLoggedIn = async (req, res) => {
     auth.verify(req, res, async function () {
         const loggedInUser = await User.findOne({ _id: req.userId });
@@ -80,5 +136,6 @@ registerUser = async (req, res) => {
 
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    logInUser
 }
