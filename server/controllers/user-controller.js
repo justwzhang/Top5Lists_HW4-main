@@ -2,6 +2,13 @@ const auth = require('../auth')
 const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
 
+logoutUser = async (req, res) => {
+    res.clearCookie("token");
+    return res
+        .status(200)
+        .json({message: "Logged Out"})
+}
+
 logInUser = async (req, res) => {
     const{email, password} = req.body
         if (!email || !password) {
@@ -136,5 +143,6 @@ registerUser = async (req, res) => {
 module.exports = {
     getLoggedIn,
     registerUser,
-    logInUser
+    logInUser,
+    logoutUser
 }

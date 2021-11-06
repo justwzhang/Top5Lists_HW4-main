@@ -24,14 +24,9 @@ export default function BasicModal() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext)
     const [open, setOpen] = React.useState(auth.errorMessage? true: false);
-    const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
         auth.removeError();
-    }
-    if(auth.errorMessage){
-        //setOpen(true);
-        //open = true
     }
     return (
         <Modal

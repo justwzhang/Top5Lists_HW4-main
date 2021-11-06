@@ -11,6 +11,7 @@ export const AuthActionType = {
     REGISTER_USER: "REGISTER_USER",
     LOGIN_USER: "LOGIN_USER",
     SET_ERROR: "SET_ERROR",
+    LOGOUT_USER: "LOGOUT_USER",
 }
 
 function AuthContextProvider(props) {
@@ -63,9 +64,28 @@ function AuthContextProvider(props) {
                     error: payload.error
                 })
             }
+            case AuthActionType.LOGOUT_USER:{
+                return setAuth({
+                    user:null,
+                    loggedIn: false,
+                    errorMessage: null,
+                    error:false
+                });
+            }
             default:
                 return auth;
         }
+    }
+
+    auth.logoutUser = function(){
+        let asyncLogout = async function(){
+            const response = api.logoutUser();
+            authReducer({
+                type: AuthActionType.LOGOUT_USER,
+                payload: null
+            })
+        }
+        asyncLogout();
     }
 
     auth.removeError = function(){
