@@ -50,7 +50,7 @@ function Top5Item(props) {
     }
     function handleToggleEdit(){
         setEditActive(true);
-        store.itemEditActive();
+        store.itemEditActive(true);
     }
     function handleKeyPress(event) {
         if (event.code === "Enter") {
@@ -58,6 +58,7 @@ function Top5Item(props) {
                 store.addUpdateItemTransaction(props.index, newText);
             }
             setEditActive(false);
+            store.itemEditActive(false);
         }
     }
     function handleUpdateText(event) {
