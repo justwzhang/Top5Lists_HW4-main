@@ -15,6 +15,7 @@ function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [draggedTo, setDraggedTo] = useState(0);
+    const [newText, setText] = useState(props.text);
 
     function handleDragStart(event, targetId) {
         event.dataTransfer.setData("item", targetId);
@@ -47,7 +48,22 @@ function Top5Item(props) {
         // UPDATE THE LIST
         store.addMoveItemTransaction(sourceId, targetId);
     }
-
+    function handleToggleEdit(){
+        setEditActive(true);
+        store.itemEditActive();
+    }
+    function handleKeyPress(event) {
+        if (event.code === "Enter") {
+            if(newText !== props.text){
+                store.addUpdateItemTransaction(props.index, newText);
+            }
+            setEditActive(false);
+        }
+    }
+    function handleUpdateText(event) {
+        setText(event.target.value);
+    }
+    
     let { index } = props;
 
     let itemClass = "top5-item";
@@ -55,8 +71,7 @@ function Top5Item(props) {
         itemClass = "top5-item-dragged-to";
     }
 
-    return (
-            <ListItem
+    let ItemElement = <ListItem
                 id={'item-' + (index+1)}
                 key={props.key}
                 className={itemClass}
@@ -83,13 +98,34 @@ function Top5Item(props) {
                 }}
             >
             <Box sx={{ p: 1 }}>
-                <IconButton aria-label='edit'>
+                <IconButton aria-label='edit' onClick={handleToggleEdit}>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
             </Box>
                 <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
             </ListItem>
-    )
+
+
+if (editActive) {
+    ItemElement =
+        <TextField
+            margin="normal"
+            required
+            fullWidth
+            id={"item-" + (index+1)}
+            label="Top 5 List item"
+            name="name"
+            autoComplete="Top 5 List item"
+            className='list-card'
+            onKeyPress={handleKeyPress}
+            onChange={handleUpdateText}
+            defaultValue={props.text}
+            inputProps={{style: {fontSize: 48}}}
+            InputLabelProps={{style: {fontSize: 24}}}
+            autoFocus
+        />
+}
+    return ItemElement;
 }
 
 export default Top5Item;

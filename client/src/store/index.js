@@ -173,39 +173,48 @@ function GlobalStoreContextProvider(props) {
     // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
+    store.itemEditActive = function (){
+        storeReducer({
+            type: GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE,
+            payload: null
+        });
+    }
+
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
     store.changeListName = async function (id, newName) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
             if(top5List.ownerEmail === auth.user.email){
-                top5List.name = newName;
-                async function updateList(top5List) {
-                    response = await api.updateTop5ListById(top5List._id, top5List);
-                    if (response.data.success) {
-                        async function getListPairs(top5List) {
-                            const response = await api.getAllTop5Lists();
-                            if (response.data.success) {
-                                let listOfLists = response.data.data;
-                                let pairsArray =[];
-                                listOfLists.map((list) => {
-                                    if(list.ownerEmail === auth.user.email){
-                                        pairsArray = [...pairsArray, ({
-                                            _id:list._id,
-                                            name:list.name
-                                        })];
-                                    } 
-                                });
-                                storeReducer({
-                                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                                    payload: pairsArray
-                                });
+                if(top5List.name !== newName){
+                    top5List.name = newName;
+                    async function updateList(top5List) {
+                        response = await api.updateTop5ListById(top5List._id, top5List);
+                        if (response.data.success) {
+                            async function getListPairs(top5List) {
+                                const response = await api.getAllTop5Lists();
+                                if (response.data.success) {
+                                    let listOfLists = response.data.data;
+                                    let pairsArray =[];
+                                    listOfLists.map((list) => {
+                                        if(list.ownerEmail === auth.user.email){
+                                            pairsArray = [...pairsArray, ({
+                                                _id:list._id,
+                                                name:list.name
+                                            })];
+                                        } 
+                                    });
+                                    storeReducer({
+                                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                                        payload: pairsArray
+                                    });
+                                }
                             }
+                            getListPairs(top5List);
                         }
-                        getListPairs(top5List);
                     }
+                    updateList(top5List);
                 }
-                updateList(top5List);
             }
         }
     }
