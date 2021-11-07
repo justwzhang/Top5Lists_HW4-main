@@ -172,15 +172,21 @@ function GlobalStoreContextProvider(props) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
                 if (response.data.success) {
                     async function getListPairs(top5List) {
-                        response = await api.getTop5ListPairs();
+                        const response = await api.getAllTop5Lists();
                         if (response.data.success) {
-                            let pairsArray = response.data.idNamePairs;
+                            let listOfLists = response.data.data;
+                            let pairsArray =[];
+                            listOfLists.map((list) => {
+                                if(list.ownerEmail === auth.user.email){
+                                    pairsArray = [...pairsArray, ({
+                                        _id:list._id,
+                                        name:list.name
+                                    })];
+                                } 
+                            });
                             storeReducer({
-                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                payload: {
-                                    idNamePairs: pairsArray,
-                                    top5List: top5List
-                                }
+                                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                                payload: pairsArray
                             });
                         }
                     }
@@ -230,9 +236,20 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
-        const response = await api.getTop5ListPairs();
+        const response = await api.getAllTop5Lists();
         if (response.data.success) {
-            let pairsArray = response.data.idNamePairs;
+            let listOfLists = response.data.data;
+            let pairsArray =[];
+            listOfLists.map((list) => {
+                if(list.ownerEmail === auth.user.email){
+                    pairsArray = [...pairsArray, ({
+                        _id:list._id,
+                        name:list.name
+                    })];
+                } 
+            });
+            //let pairsArray = response.data.idNamePairs;
+            //pairsArray = store.fixListPairs(pairsArray);
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: pairsArray
