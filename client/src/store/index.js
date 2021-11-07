@@ -290,7 +290,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.deleteList = async function (listToDelete) {
-        if(top5List.ownerEmail === auth.user.email){
+        if(listToDelete.ownerEmail === auth.user.email){
             let response = await api.deleteTop5ListById(listToDelete._id);
             if (response.data.success) {
                 store.loadIdNamePairs();
