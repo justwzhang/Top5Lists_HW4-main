@@ -41,21 +41,28 @@ logInUser = async (req, res) => {
                 .status(400)
                 .json({errorMessage: "Email not registered"})
         })
-        if(bcrypt.compare(password, user.passwordHash)){
-            const token = auth.signToken(user);
-            await res.cookie("token", token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "none"
-            }).status(200).json({
-                loggedIn: true,
-                user: {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email
-                }
-            }).send();
-        }
+        bcrypt.compare(password, user.passwordHash, async function(err, result){
+            if(result == true){
+                console.log("good");
+                const token = auth.signToken(user);
+                await res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none"
+                }).status(200).json({
+                    loggedIn: true,
+                    user: {
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email
+                    }
+                }).send();
+            }else{
+                return res
+                .status(404)
+                .json({errorMessage: "Invalid Password"}).send();
+            }
+        });
     }catch(err){
         console.log(err)
         return res
