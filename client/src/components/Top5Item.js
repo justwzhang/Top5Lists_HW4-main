@@ -23,12 +23,13 @@ function Top5Item(props) {
 
     function handleDragOver(event) {
         event.preventDefault();
+        setDraggedTo(true);
     }
 
     function handleDragEnter(event) {
         event.preventDefault();
         console.log("entering");
-        setDraggedTo(true);
+        // setDraggedTo(true);
     }
 
     function handleDragLeave(event) {
@@ -39,14 +40,16 @@ function Top5Item(props) {
 
     function handleDrop(event, targetId) {
         event.preventDefault();
+        
         let sourceId = event.dataTransfer.getData("item");
         sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
+        if(sourceId != targetId){
+            console.log("handleDrop (sourceId, targetId): ( " + sourceId + ", " + targetId + ")");
+
+            // UPDATE THE LIST
+            store.addMoveItemTransaction(sourceId, targetId);
+        }
         setDraggedTo(false);
-
-        console.log("handleDrop (sourceId, targetId): ( " + sourceId + ", " + targetId + ")");
-
-        // UPDATE THE LIST
-        store.addMoveItemTransaction(sourceId, targetId);
     }
     function handleToggleEdit(){
         setEditActive(true);
@@ -92,7 +95,7 @@ function Top5Item(props) {
                     handleDrop(event, (index+1))
                 }}
                 draggable="true"
-                sx={{ display: 'flex', p: 1 }}
+                sx={{ display: 'flex', p: 1, }}
                 style={{
                     fontSize: '48pt',
                     width: '100%'
